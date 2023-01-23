@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: Include borgmatic.
+      ansible.builtin.include_role:
+        name: alecunsolo.borgmatic
