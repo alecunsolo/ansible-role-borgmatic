@@ -1,31 +1,47 @@
 Ansible Role: borgmatic
 =========
 
-A brief description of the role goes here.
+This role install and configure [borg](https://www.borgbackup.org/) and [borgmatic](https://torsion.org/borgmatic/).
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+EL distros should install `EPEL` repository.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+```yaml
+borgmatic_config_file: default-config.yaml.j2
+```
+The configuration template file name. The default one is a generic configuration generated with `generate-borgmatic-config`
+```yaml
+borgmatic_frequency: daily
+```
+This value is used to configre the `OnCalendar` option of the `borgmatic.timer` systemd unit.
+```yaml
+borgmatic_enable_timer: true
+```
+Whether to enable or not the timer.
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+The collections `community.crypto` and `community.general` must be installed.
 
 Example Playbook
 ----------------
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```yaml
+- hosts: all
+  become: yes
+  tasks:
+    - name: Include borgmatic.
+      ansible.builtin.include_role:
+        name: alecunsolo.borgmatic
+```
 
 License
 -------
