@@ -1,2 +1,77 @@
 ---
-# tasks file for borgmatic
+- name: Ensure ssh directory exists.
+  ansible.builtin.file:
+    path: /root/.ssh
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Ensure ssh keys for backup exist.
+  community.crypto.openssh_keypair:
+    path: /root/.ssh/id_ed25519_{{ item }}
+    type: ed25519
+    comment: borgbackup
+    regenerate: partial_idempotence
+  loop:
+    - borg
+    - borg_ao
+
+- name: Retrieve ssh public keys.
+  ansible.builtin.fetch:
+    src: /root/.ssh/id_ed25519_{{ item }}.pub
+    dest: borgmatic-keys/{{ ansible_hostname }}/
+    flat: yes
+  loop:
+    - borg
+    - borg_ao
+
+- name: Enable CRB repo on EL.
+  community.general.ini_file:
+    path: /etc/yum.repos.d/{{ repo_file[ansible_distribution] }}.repo
+    section: crb
+    option: enabled
+    value: 1
+    create: no
+  when: ansible_os_family == "RedHat" and repo_file[ansible_distribution] is defined
+
+- name: Ensure required packages are installed.
+  ansible.builtin.package:
+    name:
+      - borgbackup
+      - borgmatic
+    state: present
+
+- name: Ensure config directory exitst.
+  ansible.builtin.file:
+    path: /etc/borgmatic
+    state: directory
+    owner: root
+    group: root
+    mode: '0750'
+
+- name: Configure borgmatic.
+  ansible.builtin.template:
+    src: '{{ borgmatic_config_file }}'
+    dest: /etc/borgmatic/config.yaml
+    owner: root
+    group: root
+    mode: '0640'
+
+- name: Install systemd units.
+  ansible.builtin.template:
+    src: '{{ item }}.j2'
+    dest: /etc/systemd/system/{{ item }}
+    owner: root
+    group: root
+    mode: '0644'
+  loop:
+    - borgmatic.service
+    - borgmatic.timer
+  notify: Reload systemd
+
+- name: Enable and start borgmatic timer.
+  ansible.builtin.service:
+    name: borgmatic.timer
+    enabled: '{{ borgmatic_enable_timer | ternary("yes", "no") }}'
+    state: '{{ borgmatic_enable_timer | ternary("started", "stopped") }}'

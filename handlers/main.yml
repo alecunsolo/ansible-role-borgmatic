@@ -1,2 +1,4 @@
 ---
-# handlers file for borgmatic
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: yes

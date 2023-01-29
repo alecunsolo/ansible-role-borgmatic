@@ -1,6 +1,17 @@
 ---
 - name: Converge
   hosts: all
+  pre_tasks:
+    - name: Update apt cache.
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      when: ansible_os_family | lower == "debian"
+    - name: Install epel package.
+      ansible.builtin.yum:
+        name: epel-release
+        state: present
+      when: ansible_os_family | lower == "redhat"
   tasks:
     - name: Include borgmatic.
       ansible.builtin.include_role:
