@@ -1,3 +1,6 @@
+[![build status](https://github.com/alecunsolo/ansible-role-borgmatic/actions/workflows/ci.yml/badge.svg)](https://github.com/alecunsolo/ansible-role-borgmatic/actions/workflows/ci.yml)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
+
 Ansible Role: borgmatic
 =========
 
@@ -6,7 +9,7 @@ This role install and configure [borg](https://www.borgbackup.org/) and [borgmat
 Requirements
 ------------
 
-EL distros should install `EPEL` repository.
+It is assumed that the ssh client is installed (for generating ssh keys). EL distros should also install `EPEL` repository and `dnf-plugins-core` (needed for enabling CRB repository via `dnf config-manager`).
 
 Role Variables
 --------------

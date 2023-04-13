@@ -1,0 +1,21 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+    - name: Update apt cache.
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      when: ansible_os_family | lower == "debian"
+    - name: Ensure requred packages are installed [rhel].
+      ansible.builtin.package:
+        name:
+          - dnf-plugins-core
+          - openssh
+        state: present
+      when: ansible_os_family | lower == "redhat"
+    - name: Ensure requred packages are installed [debian].
+      ansible.builtin.package:
+        name: ssh
+        state: present
+      when: ansible_os_family | lower == "debian"
