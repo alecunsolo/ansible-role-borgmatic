@@ -1,9 +1,4 @@
 ---
-repo_file:
-  AlmaLinux: almalinux-crb.repo
-  Rocky: rocky
-  RedHat: redhat
-
 borgmatic_config_file: default-config.yaml.j2
 borgmatic_frequency: daily
 borgmatic_enable_timer: true
