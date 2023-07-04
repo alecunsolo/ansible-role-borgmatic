@@ -3,7 +3,10 @@
 
 Ansible Role: borgmatic
 =========
+## DISCLAIMER
+After [this](https://www.redhat.com/en/blog/furthering-evolution-centos-stream) announcement I will not test on RHEL anymore.
 
+---------
 This role install and configure [borg](https://www.borgbackup.org/) and [borgmatic](https://torsion.org/borgmatic/).
 
 Requirements
